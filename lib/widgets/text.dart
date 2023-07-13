@@ -9,6 +9,6 @@ class InfoTexto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(texto!, style: TextStyle(color: color, fontSize: size), );
+    return Text(texto!, style: TextStyle(color: color, fontSize: size, decoration: TextDecoration.none), );
   }
 }
