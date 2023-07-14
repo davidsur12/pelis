@@ -15,9 +15,9 @@ class ListaMovies extends StatelessWidget {
      
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          InfoTexto(texto:categoria, color: Colors.white, size:30 ),
+          InfoTexto(texto:categoria, color: Colors.white, size:20 ),
     
-        SizedBox(height: 5),
+        SizedBox(height: 7),
           Container(
             color:Colors.black,
               height: 220,

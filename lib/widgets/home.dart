@@ -3,6 +3,7 @@ import 'package:tmdb_api/tmdb_api.dart';
 import 'package:peliculas/widgets/text.dart';
 import 'package:peliculas/widgets/lista_movies.dart';
 import 'package:peliculas/widgets/lista_card.dart';
+import 'package:peliculas/delegates/search_movie_delegate.dart';
 
 
 class home extends StatefulWidget {
@@ -122,10 +123,12 @@ class _homeState extends State<home> {
                 expandedHeight: 80,
                 pinned: true,
                 actions: [ IconButton(
-            icon: Icon(Icons.search, color:Colors.white,size:100 ,),
+            icon: Icon(Icons.search, color:Colors.white,size:30 ,),
             onPressed: () {
               //startSearchFunction();
               print("btn");//debe ir a una pantalla donde se pueda buscar
+
+              showSearch(context: context, delegate: SearchMovieDelegate() );
             })],
                 forceElevated: innerBoxIsScrolled,
               ),
