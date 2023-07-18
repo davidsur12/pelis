@@ -60,4 +60,24 @@ static String nameMovie(Map<String , dynamic> movie){
     return result;
   
 }
+static String year(Map<String , dynamic> movie){
+
+return  movie["release_date"]!=null ? movie["release_date"] : "none";
+
+}
+
+static String descripcion(Map<String , dynamic> movie){
+
+
+return  movie["overview"]!=null ? movie["overview"] : "none";
+
+}
+static String paguina(Map<String , dynamic> movie){
+
+
+return  movie["homepage"]!=null ? movie["homepage"] : "";
+
+}
+
+
 }
