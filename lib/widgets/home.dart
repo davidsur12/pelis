@@ -81,6 +81,8 @@ class _homeState extends State<home> {
 
     
     //Map movie = await tmdbWithCustomLogs.v3.movies.getDetails(43421); //consulta peliculas con el id
+ 
+   
     //print(movie.toString());
     Map recomendados = await tmdbWithCustomLogs.v3.trending.getTrending();
     Map peliculas = await tmdbWithCustomLogs.v3.movies.getPopular();
