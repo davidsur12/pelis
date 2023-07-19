@@ -1,24 +1,31 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:peliculas/utils/utils.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
 import 'package:peliculas/widgets/text.dart';
+import 'package:peliculas/widgets/lista_movies.dart';
 
 class Info_Movies extends StatelessWidget {
+
   final Map<String, dynamic> movie; //info de la pelicula
   const Info_Movies({super.key, required this.movie});
-
+  
   @override
   Widget build(BuildContext context) {
+   
     return NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              SliverAppBar(
-                title: InfoTexto(
+
+
+            /*  SliverAppBar(
+               /* title: InfoTexto(
                   texto: "Peliculas",
                   color: Colors.white,
                   size: 30.0,
-                ),
-                backgroundColor: Colors.black,
-                expandedHeight: 80,
+                ),*/
+                backgroundColor: Colors.green.withOpacity(0.1),
+                expandedHeight: 1,
                 pinned: true,
                 actions: [
                   IconButton(
@@ -35,8 +42,10 @@ class Info_Movies extends StatelessWidget {
                 ],
                 forceElevated: innerBoxIsScrolled,
               ),
-            ],
-        body: info());
+           */ ],
+        body: 
+        SingleChildScrollView(child:  info(),)
+       );
   }
 
   Widget info() {
@@ -47,10 +56,15 @@ class Info_Movies extends StatelessWidget {
 //obtengo los resultados
           print(snapshot.data.toString());
           return Container(
-            color: Colors.amber,
+            color: Colors.black,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 loadImage(snapshot.data),
+              description(snapshot.data),
+              paguina(snapshot.data),
+              relacionados(snapshot.data) 
+          
               ],
             ),
           );
@@ -62,39 +76,15 @@ class Info_Movies extends StatelessWidget {
 
   Widget loadImage(Map<String, dynamic> result) {
 //devuelve una imagen en caso de que la encuentre  de lo contraio devuelve una imagen de not found
+Widget img;
     if (result["video"] != null && result["video"] != false) {
-      return Text(result["video"]);
+      img=Text(result["video"]);
     } else if (result["backdrop_path"] != null) {
-      return Container(
-        height: 370,
-        color: Colors.white,
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Image.network(
-                'https://image.tmdb.org/t/p/w500' + result['backdrop_path']),
-            Container(
-              color: Colors.black.withOpacity(0.2),
-              height: 370,
-              width: 500,
-              child: Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    //alignment: Alignment.bottomLeft,
-                    children: [
-                      Image.network(
-                          'https://image.tmdb.org/t/p/w500' +
-                              result['poster_path'],
-                          height: 150),
-                          Row(children: [Text("release_date")],)
-                    ],
-                  )),
-            )
-          ],
-        ),
-      );
+img=Image.network(
+                'https://image.tmdb.org/t/p/w500' + result['backdrop_path']);
+      
+    }else{
+     img=Image.asset("assets/img/fondo.png",   width:600);
     }
 
 // Image.network('https://image.tmdb.org/t/p/w500' + result['backdrop_path']),
@@ -107,6 +97,110 @@ else if(result["logo_path"]!= null){
 return Image.network('https://image.tmdb.org/t/p/w500' + result['logo_path'], );
 }*/
 
-    return Image.asset("assets/img/fondo.png", height: 200);
+return Container(
+        height: 370,
+        color: Colors.white,
+        child: Stack(
+          alignment: Alignment.topLeft,
+          children: [
+            img,
+            
+           // Image.network( 'https://image.tmdb.org/t/p/w500' + result['backdrop_path']),
+            Container(
+              color: Colors.black.withOpacity(0.2),
+              height: 370,
+              width: 500,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    //alignment: Alignment.bottomLeft,
+                    children: [
+                      Image.network(
+                          'https://image.tmdb.org/t/p/w500' +
+                              result['poster_path'],
+                          height: 170),
+                          Row(children: [ Container(
+                            height: 90,
+                            width:376,
+                            color:Colors.black.withOpacity(0.8),
+                            child:
+                            Padding(padding: EdgeInsets.only(left: 10, top: 10), child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [InfoTexto( texto:ConsultaTmbd.year(movie) , color:Colors.white , size:15),
+                              SizedBox(height: 7,),
+                              InfoTexto( texto:ConsultaTmbd.nameMovie(movie) , color:Colors.white , size:20)],)  ,)
+                            ) ],)
+                    ],//required this.texto, required this.color, required this.size
+                  )),
+            ),IconButton(onPressed: (){
+
+              
+            }, icon: Icon(Icons.flag_circle_sharp, color:Colors.white)),
+          ],
+        ),
+      );
+
+    
   }
+
+
+Widget description(Map<String, dynamic> result){
+String overview=ConsultaTmbd.descripcion(result);
+  if(overview.isEmpty){
+    return Text("");
+  }
+  
+  return 
+  Padding(padding: EdgeInsets.all(30),
+   child:Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      SizedBox(height: 15),
+    InfoTexto( texto: "Descripcion" , color: Colors.white70, size: 18, fontFamily: "rancho"),
+    SizedBox(height: 10),
+    InfoTexto( texto: overview , color: Colors.white, size: 15,)]));
+
+  
+}
+Widget paguina(Map<String, dynamic> result){
+
+  String pagina=ConsultaTmbd.paguina(result);//homepage
+  if(pagina.isEmpty){
+    return Text("");
+  }
+  return 
+  Padding(padding: EdgeInsets.only(left: 30 , bottom: 30),
+   child:Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisAlignment: MainAxisAlignment.start,
+    children: [
+      SizedBox(height: 15),
+    InfoTexto( texto: "Paguina" , color: Colors.white70, size: 18, fontFamily: "rancho"),
+    SizedBox(height: 10),
+    InfoTexto( texto: pagina , color: Colors.white, size: 15,)]));
+  
+}
+  
+  Widget relacionados(Map<String, dynamic> result){
+//var genero= ConsultaTmbd.relacionados(result);
+
+return StreamBuilder(stream: Stream.fromFuture(ConsultaTmbd.relacionados(result)), builder: (context, snapshot) {
+
+  if(snapshot.hasData ){
+var lista=[snapshot.data["results"]];
+return  ListaMovies(movies: lista[0] ,  categoria: "Similares");
+
+  }
+  else if(snapshot.hasError){
+    Text("");
+  }
+return CircularProgressIndicator();
+
+},);
+
+  }
+
+
 }
