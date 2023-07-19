@@ -11,7 +11,7 @@ class ConsultaTmbd{
 static final tmdbWithCustomLogs = TMDB(
         //TMDB instance
         ApiKeys(apiKey, token), 
-        defaultLanguage: 'en-ES');
+        defaultLanguage: 'es-CO');
 
 
 loadMovies(String movie) async {
@@ -76,6 +76,21 @@ static String paguina(Map<String , dynamic> movie){
 
 
 return  movie["homepage"]!=null ? movie["homepage"] : "";
+
+}
+
+static relacionados(Map<String , dynamic> movie)async{
+
+//Future<Map<dynamic, dynamic>> 
+  Map lista=movie["genres"][0];
+
+var peliculas = await tmdbWithCustomLogs.v3.discover.getMovies(withGenres: lista["id"].toString());
+
+return peliculas ; //["genres"]["id"];
+
+
+
+
 
 }
 
