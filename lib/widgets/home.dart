@@ -4,6 +4,7 @@ import 'package:peliculas/widgets/text.dart';
 import 'package:peliculas/widgets/lista_movies.dart';
 import 'package:peliculas/widgets/lista_card.dart';
 import 'package:peliculas/delegates/search_movie_delegate.dart';
+import 'package:peliculas/widgets/lista_infinita.dart';
 
 
 class home extends StatefulWidget {
@@ -49,7 +50,8 @@ class _homeState extends State<home> {
           showLogs: true, //must be true than only all other logs will be shown
           showErrorLogs: true,
         )*/
-        defaultLanguage: 'en-ES');
+        defaultLanguage: 'es-CO');
+
 
     //Map generos = await tmdbWithCustomLogs.v3.genres.getMovieList(); //Obtén la lista de géneros oficiales para películas.
     /* 
@@ -65,17 +67,17 @@ class _homeState extends State<home> {
 
     //busqueda por categorias
     var busquedaAdventura = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "12"); //adventura
+        .getMovies(withGenres: "12", includeVideo:true, page: 1, ); //adventura
     var busquedaComedia = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "35"); //comedia
+        .getMovies(withGenres: "35", includeVideo:true, page: 1); //comedia
     var busquedaHorror = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "27"); //horror
+        .getMovies(withGenres: "27", includeVideo:true,page: 1); //horror
     var busquedaWar = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10752"); //gerra
+        .getMovies(withGenres: "10752", includeVideo:true,page: 1); //gerra
     var busquedaRomance = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10749"); //romance
+        .getMovies(withGenres: "10749", includeVideo:true,page: 1); //romance
     var busquedaDocumental = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "99"); //documental
+        .getMovies(withGenres: "99", includeVideo:true,page: 1); //documental
         
         
 
@@ -84,10 +86,11 @@ class _homeState extends State<home> {
  
    
     //print(movie.toString());
+     
     Map recomendados = await tmdbWithCustomLogs.v3.trending.getTrending();
     Map peliculas = await tmdbWithCustomLogs.v3.movies.getPopular();
     Map series = await tmdbWithCustomLogs.v3.tv.getPopular();
-
+// v3.tv.getPopular();
     setState(() {
       listaPeliculas = peliculas["results"];
       listaSeries = series["results"];
@@ -105,6 +108,8 @@ class _homeState extends State<home> {
         busquedaDocumental["results"],
  
       ];
+
+      
     });
   }
 
@@ -156,6 +161,7 @@ class _homeState extends State<home> {
         categoria: txt[index],
       ));
     }
+    result.add(ListaInfinita(genero:"12" , titulo:"Terrorrrrrr") );
 
     return result;
   }

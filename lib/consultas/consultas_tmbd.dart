@@ -32,6 +32,14 @@ loadMovies(String movie) async {
     
   }
 
+
+
+static listaPeliculas(String genero , int page)async{
+
+return  await tmdbWithCustomLogs.v3.discover
+        .getMovies(withGenres: genero, includeVideo:true, page: page, ); 
+
+}
   static searchMovie(int id)async{
 
    Map movieinfo = await tmdbWithCustomLogs.v3.movies.getDetails(id); 

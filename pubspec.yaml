@@ -81,6 +81,12 @@ flutter:
       - family: iris
         fonts:
          - asset: assets/fonts/IrishGrover-Regular.ttf
+      - family: lilita
+        fonts:
+         - asset: assets\fonts\LilitaOne-Regular.ttf
+      - family: rancho
+        fonts:
+         - asset: assets\fonts\Rancho-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

@@ -54,7 +54,7 @@ class Info_Movies extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
 //obtengo los resultados
-          print(snapshot.data.toString());
+         // print(snapshot.data.toString());
           return Container(
             color: Colors.black,
             child: Column(
