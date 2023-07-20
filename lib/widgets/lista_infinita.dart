@@ -17,25 +17,65 @@ ListaInfinita({super.key, required this.genero, required this.titulo});
 class _ListaInfinitaState extends State<ListaInfinita> {
   
    List? movies;
+   List? movies2;
    ScrollController _scrollController = ScrollController();//.addListener();
    int page=1;
    int aumento=1;
   
 @override
   void initState() {
-  
+    listain();
       _scrollController.addListener(_onScroll);
+    
+
     super.initState();
   }
- void _onScroll() {
+ listain()async{
+
+   var l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
+ 
+  setState(() {
+   
+   if(movies != null){
+ //print("movies " + movies!.length.toString());
+ 
+if(page>1){
+ // page++;
+// print( "nuevos valres " + l["results"].length.toString());
+        movies!.addAll(l["results"]);
+   //  print("movies" +movies!.length.toString());
+     }
+      
+   }else{
+
+     movies=l["results"];
+     // print( l);
+     
+     }
+     
+     
+
+  });
+       
+
+ }
+ void _onScroll() async{
     if (_scrollController.position.atEdge) {
       if (_scrollController.position.pixels == 0) {
         // Estás en la parte superior del ListView
-        print('Estás en la parte superior del ListView');
+       
       } else {
         // Estás en la parte inferior del ListView
-        print('Estás en la parte inferior del ListView');
-        page++;
+       // print('Estás en la parte inferior del ListView');
+       // print("page $page  and aumento $aumento  " );
+        
+        
+        if(page<100){
+          page++;
+listain();
+
+        }
+        
       }
     }
   }
@@ -44,38 +84,15 @@ class _ListaInfinitaState extends State<ListaInfinita> {
   @override
   Widget build(BuildContext context) {
     widget.genero;
-    return 
-     // movies=ConsultaTmbd.listaPeliculas(widget.genero, 1);
-    StreamBuilder(stream: Stream.fromFuture(ConsultaTmbd.listaPeliculas(widget.genero, page)), builder: (context, snapshot) {
-
-//una lista deberia poder agrandarse  para poder mostrar los resultados las nuevas peliculas
-//list.add(nuevos resultados) sy cambiar  el itemcount a lista.length
-//si cambia el page  se deberia agregar nuevos valores
-if(snapshot.hasData){
-  if(page>1){
-if(page != aumento){
-movies!.add(snapshot.data["results"]);
-aumento=page;
-
-
-}
-
-  }else{
-  movies=snapshot.data["results"];
-  }
-
-  
-return lista();
-
-}else if(snapshot.hasError){
-  return Text("error");
-}
-
-return Text("Cargando");
-    },);
+  try{ return  lista();}
+  catch(e){
+    setState(() {
+      page=1;
+      
+    });
+    return  lista();}
+   
     
-   /* 
-    */
   }
 
 
@@ -113,7 +130,7 @@ return Container(
                   
                 controller: _scrollController,
                 scrollDirection: Axis.horizontal,
-                itemCount: movies!.length,
+                itemCount:     movies!=null? movies!.length:0,
                 itemBuilder: (context, index) {
                   return Material(
                       child: InkWell(
@@ -135,10 +152,11 @@ return Container(
                                     Container(
                                         decoration: BoxDecoration(
                                           image: DecorationImage(
-                                            image: NetworkImage(
+                                            image: 
+                                            
+                                            NetworkImage(
                                                 'https://image.tmdb.org/t/p/w500' +
-                                                    movies![index]
-                                                        ['poster_path']),
+                                                    movies![index]['poster_path']),
                                           ),
                                         ),
                                         height: 200,
@@ -171,7 +189,20 @@ return Container(
       ),
     );
 
-
 }
+
+ getPoster(int index) {
+    ImageProvider result ;
+// movies[index]["title"]!=null?movies[index]["title"]:"Loading"
+
+    if (movies![index]["poster_path"] != null) {
+//si el titulo se encuentra
+      result = NetworkImage('https://image.tmdb.org/t/p/w500' +movies![index]['poster_path']);
+    } else {
+    result = NetworkImage('https://image.tmdb.org/t/p/w500' +movies![index]['poster_path']);//aqui deberia ir una imagen en caso de no encontrar  nada
+    //result=Image.asset("");
+    }
+    return result;
+  }
 
 }
