@@ -21,6 +21,7 @@ class _ListaInfinitaState extends State<ListaInfinita> {
    ScrollController _scrollController = ScrollController();//.addListener();
    int page=1;
    int aumento=1;
+   var l;
   
 @override
   void initState() {
@@ -30,9 +31,14 @@ class _ListaInfinitaState extends State<ListaInfinita> {
 
     super.initState();
   }
+  @override
+void dispose() {
+  
+  super.dispose();
+}
  listain()async{
 
-   var l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
+    l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
  
   setState(() {
    
@@ -151,13 +157,15 @@ return Container(
                                   child: Column(children: [
                                     Container(
                                         decoration: BoxDecoration(
-                                          image: DecorationImage(
+                                          image: getPoster(index),
+                                          
+                                         /* DecorationImage(
                                             image: 
                                             
                                             NetworkImage(
                                                 'https://image.tmdb.org/t/p/w500' +
                                                     movies![index]['poster_path']),
-                                          ),
+                                          ),*/
                                         ),
                                         height: 200,
                                         width: 170,
@@ -192,17 +200,39 @@ return Container(
 }
 
  getPoster(int index) {
-    ImageProvider result ;
+var result ;
 // movies[index]["title"]!=null?movies[index]["title"]:"Loading"
 
     if (movies![index]["poster_path"] != null) {
 //si el titulo se encuentra
-      result = NetworkImage('https://image.tmdb.org/t/p/w500' +movies![index]['poster_path']);
+      result = DecorationImage(image:  NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']),);
     } else {
-    result = NetworkImage('https://image.tmdb.org/t/p/w500' +movies![index]['poster_path']);//aqui deberia ir una imagen en caso de no encontrar  nada
+      print("pelicula sin caratula");
+    result =  new DecorationImage(
+      image: new AssetImage('assets/img/fondo.png'),
+      fit: BoxFit.cover,
+    );
+ //aqui deberia ir una imagen en caso de no encontrar  nada
     //result=Image.asset("");
     }
     return result;
   }
 
+  getposter2(int index){
+
+ 
+ return FadeInImage(
+    image:NetworkImage( 'https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']),
+    placeholder: const AssetImage("assets/img/fondo.png"),
+    imageErrorBuilder:(context, error, stackTrace) {
+       return Image.asset('assets/img/fondo.png',
+           fit: BoxFit.fitWidth
+       );
+    },
+    fit: BoxFit.fitWidth,
+ 
+  );
+
+
+ }
 }

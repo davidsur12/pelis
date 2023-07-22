@@ -1,4 +1,4 @@
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class Utilidades{
 
@@ -24,4 +24,38 @@ static String nameMovie(Map<String , dynamic> movie){
   
 }
 
+
+
+static Stream<bool> isConnect()async*{
+
+
+var connectivityResult = await (Connectivity().checkConnectivity());
+
+bool result=false;
+if (connectivityResult == ConnectivityResult.mobile) {
+  result=true;
+} else if (connectivityResult == ConnectivityResult.wifi) {
+  result=true;
+
+} else if (connectivityResult == ConnectivityResult.ethernet) {
+
+  result=true;
+} else if (connectivityResult == ConnectivityResult.vpn) {
+  result=true;
+  // I am connected to a vpn network.
+  // Note for iOS and macOS:
+  // There is no separate network interface type for [vpn].
+  // It returns [other] on any device (also simulator)
+}  else if (connectivityResult == ConnectivityResult.other) {
+  result=true;
+  // I am connected to a network which is not in the above mentioned networks.
+} else if (connectivityResult == ConnectivityResult.none) {
+  // I am not connected to any network.
+  print("sin internet");
+  connectivityResult = await (Connectivity().checkConnectivity());
+  yield false;
+}
+
+ yield result;
+}
 }

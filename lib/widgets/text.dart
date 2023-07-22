@@ -12,6 +12,7 @@ class InfoTexto extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(texto!, style: TextStyle(color: color, fontSize: size, decoration: TextDecoration.none , fontFamily: this.fontFamily   ), 
     textDirection: TextDirection.ltr,
+    //textAlign: TextAlign.left);
     textAlign: TextAlign.justify );
   }
 }

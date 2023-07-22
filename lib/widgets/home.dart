@@ -5,6 +5,11 @@ import 'package:peliculas/widgets/lista_movies.dart';
 import 'package:peliculas/widgets/lista_card.dart';
 import 'package:peliculas/delegates/search_movie_delegate.dart';
 import 'package:peliculas/widgets/lista_infinita.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:peliculas/consultas/consultas_tmbd.dart';
+
+
+import 'dart:async';
 
 
 class home extends StatefulWidget {
@@ -16,12 +21,7 @@ class home extends StatefulWidget {
 
 class _homeState extends State<home> {
   List listaSeries = [];
-  List listaPeliculas = [];
-  List listaRecomendados = [];
-  List listaAdventura = [];
-  List listaComedia = [];
-  List listaHorror = [];
-  List listaContenido = [];
+  
 
   final String apiKey = "9f32a872f4cad9ed23f93e9672063656";
   final String token =
@@ -34,14 +34,43 @@ class _homeState extends State<home> {
     "Peliculas de gerra",
     "Peliculas  romanticas",
     "Documentales",
- 
   ];
+  List generos = ["12", "35", "27", "10752", "10749", "99"];
+
+  late StreamSubscription<ConnectivityResult> connectivitySubscription;
+  bool conection=false;
   @override
   void initState() {
-    loadMovies();
+   // loadMovies();
     super.initState();
-  }
+    connectivitySubscription= Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    // Got a new connectivity status!
 
+    print(result.toString());
+    if(result == ConnectivityResult.mobile || result== ConnectivityResult.wifi || result == ConnectivityResult.ethernet ||
+result == ConnectivityResult.vpn || result == ConnectivityResult.other){
+
+
+   //loadMovies();
+   series();
+   setState(() {
+   // series();
+     conection=true;
+   });
+  
+}else{
+
+  setState(() {
+    conection=false;
+  });
+  
+}
+  });
+
+
+     
+  }
+/*
   loadMovies() async {
     final tmdbWithCustomLogs = TMDB(
         //TMDB instance
@@ -52,7 +81,6 @@ class _homeState extends State<home> {
         )*/
         defaultLanguage: 'es-CO');
 
-
     //Map generos = await tmdbWithCustomLogs.v3.genres.getMovieList(); //Obtén la lista de géneros oficiales para películas.
     /* 
        {genres: [{id: 28, name: Action}, {id: 12, name: Adventure}, {id: 16, name: Animation}, {id: 35, name: Comedy}, 
@@ -62,56 +90,37 @@ class _homeState extends State<home> {
        {id: 10770, name: TV Movie}, {id: 53, name: Thriller}, {id: 10752, name: War}, {id: 37, name: Western}]}
        */
 
-   
     //var busqueda = await tmdbWithCustomLogs.v3.search .queryMovies("Drama"); //para buscar peliculas por palabras
 
     //busqueda por categorias
-    var busquedaAdventura = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "12", includeVideo:true, page: 1, ); //adventura
+    var busquedaAdventura = await tmdbWithCustomLogs.v3.discover.getMovies(
+      withGenres: "12",
+      includeVideo: true,
+      page: 1,
+    ); //adventura
     var busquedaComedia = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "35", includeVideo:true, page: 1); //comedia
+        .getMovies(withGenres: "35", includeVideo: true, page: 1); //comedia
     var busquedaHorror = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "27", includeVideo:true,page: 1); //horror
+        .getMovies(withGenres: "27", includeVideo: true, page: 1); //horror
     var busquedaWar = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10752", includeVideo:true,page: 1); //gerra
+        .getMovies(withGenres: "10752", includeVideo: true, page: 1); //gerra
     var busquedaRomance = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10749", includeVideo:true,page: 1); //romance
+        .getMovies(withGenres: "10749", includeVideo: true, page: 1); //romance
     var busquedaDocumental = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "99", includeVideo:true,page: 1); //documental
-        
-        
+        .getMovies(withGenres: "99", includeVideo: true, page: 1); //documental
 
-    
     //Map movie = await tmdbWithCustomLogs.v3.movies.getDetails(43421); //consulta peliculas con el id
- 
-   
+
     //print(movie.toString());
-     
+
     Map recomendados = await tmdbWithCustomLogs.v3.trending.getTrending();
     Map peliculas = await tmdbWithCustomLogs.v3.movies.getPopular();
     Map series = await tmdbWithCustomLogs.v3.tv.getPopular();
 // v3.tv.getPopular();
     setState(() {
-      listaPeliculas = peliculas["results"];
       listaSeries = series["results"];
-      listaRecomendados = recomendados["results"];
-      listaAdventura = busquedaAdventura["results"];
-      listaComedia = busquedaComedia["results"];
-      listaHorror = busquedaHorror["results"];
-
-      listaContenido = [
-        peliculas["results"],
-        busquedaComedia["results"],
-        busquedaHorror["results"],
-        busquedaWar["results"],
-        busquedaRomance["results"],
-        busquedaDocumental["results"],
- 
-      ];
-
-      
     });
-  }
+  }*/
 
   final texto = "peliculas";
 
@@ -129,40 +138,85 @@ class _homeState extends State<home> {
                 backgroundColor: Colors.black,
                 expandedHeight: 80,
                 pinned: true,
-                actions: [ IconButton(
-            icon: Icon(Icons.search, color:Colors.white,size:30 ,),
-            onPressed: () {
-              //startSearchFunction();
-              print("btn");//debe ir a una pantalla donde se pueda buscar
+                actions: [
+                  IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                      onPressed: () {
+                        //startSearchFunction();
+                        print(
+                            "btn"); //debe ir a una pantalla donde se pueda buscar
 
-              showSearch(context: context, delegate: SearchMovieDelegate() );
-            })],
+                        showSearch(
+                            context: context, delegate: SearchMovieDelegate());
+                      })
+                ],
                 forceElevated: innerBoxIsScrolled,
               ),
             ],
         // The content of the scroll view
-        body: Container(
-            color: Colors.black,
-            child: ListView(
-                padding: const EdgeInsets.all(8),
-                children: ListaContenido(listaContenido, txtLista))));
+        body: info2());
+        
   }
 
-  List<Widget> ListaContenido(List lista, List txt) {
+ 
+Widget info2(){
+  try{
+
+if(conection){
+return Container(
+                  color: Colors.black,
+                  child: ListView(
+                      padding: const EdgeInsets.all(8),
+                      children: ListaContenido2()));
+
+}else{
+
+ return  Text("sin internet");
+}
+
+  }catch(e){
+    return Text("error en la app");
+  }
+
+
+}
+ 
+  List<Widget> ListaContenido2() {
+
+  
     List<Widget> result = [];
-    result.add(Container(
+
+if(listaSeries.length >0){
+
+result.add(Container(
       height: 300,
       color: Colors.black,
-      child: ListaCard(movies: listaSeries),
+  
+      child: ListaCard(movies:listaSeries )
     ));
-    for (int index = 0; index < lista.length; index++) {
-      result.add(ListaMovies(
-        movies: lista[index],
-        categoria: txt[index],
-      ));
-    }
-    result.add(ListaInfinita(genero:"12" , titulo:"Terrorrrrrr") );
+}
 
+
+    for (int index = 0; index < generos.length; index++) {
+      result
+          .add(ListaInfinita(genero: generos[index], titulo: txtLista[index]));
+    }
     return result;
   }
+
+
+  series() async{
+
+ var lista=await ConsultaTmbd.listaSeries();
+
+ setState(() {
+   listaSeries=lista["results"];
+ });
+
+  }
+
 }

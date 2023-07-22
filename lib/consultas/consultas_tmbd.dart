@@ -40,6 +40,12 @@ return  await tmdbWithCustomLogs.v3.discover
         .getMovies(withGenres: genero, includeVideo:true, page: page, ); 
 
 }
+
+static listaSeries()async{
+//regresa las series de tv mas populares page 1
+return  await tmdbWithCustomLogs.v3.tv.getPopular();
+
+}
   static searchMovie(int id)async{
 
    Map movieinfo = await tmdbWithCustomLogs.v3.movies.getDetails(id); 

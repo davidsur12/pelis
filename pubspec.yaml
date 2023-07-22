@@ -40,6 +40,8 @@ dependencies:
   more_loading_gif: ^0.0.3
   link_text: ^0.2.0
   url_launcher: ^6.1.12
+  connectivity_plus: ^4.0.1
+  rxdart: ^0.27.7
 
 dev_dependencies:
   flutter_test:

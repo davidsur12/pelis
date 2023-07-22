@@ -14,8 +14,8 @@ class ListaCard extends StatelessWidget {
      Swiper(
       
         itemBuilder: (BuildContext context,int index){
-          return Image.network('https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
-          height:200,);
+          return  movies[index]['poster_path'] != null ? Image.network('https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
+          height:200,) :Image.asset("assets/img/fondo.png");
         },
         itemCount: movies.length,
         pagination: SwiperPagination(),

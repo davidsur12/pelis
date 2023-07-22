@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/widgets/home.dart';
 
-void main() {
+import 'package:peliculas/utils/conecction.dart';
+
+//final internetChecker = CheckInternetConnection();  
+
+void main() async {
+  //final internetChecker = CheckInternetConnection(); 
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+
 
   // This widget is the root of your application.
   @override
