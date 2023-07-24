@@ -23,10 +23,7 @@ class _homeState extends State<home> {
   List listaSeries = [];
   
 
-  final String apiKey = "9f32a872f4cad9ed23f93e9672063656";
-  final String token =
-      "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5ZjMyYTg3MmY0Y2FkOWVkMjNmOTNlOTY3MjA2MzY1NiIsInN1YiI6IjY0YWIzZDEwZDFhODkzMDBhZGJmYWI0MiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.l1Jt9Dxnk10XYFa4r4suTABrwqvz0Cgv8IFZI3bpbng";
-
+  
   final List<String> txtLista = [
     "Peliculas populares",
     "Pelicuas Comedia",
@@ -39,6 +36,7 @@ class _homeState extends State<home> {
 
   late StreamSubscription<ConnectivityResult> connectivitySubscription;
   bool conection=false;
+  
   @override
   void initState() {
    // loadMovies();
@@ -169,13 +167,13 @@ Widget info2(){
 if(conection){
 return Container(
                   color: Colors.black,
-                  child: ListView(
-                      padding: const EdgeInsets.all(8),
-                      children: ListaContenido2()));
+                  child:SingleChildScrollView (child: Column(//ListView(
+                      //padding: const EdgeInsets.all(8),
+                      children: ListaContenido2())));
 
 }else{
 
- return  Text("sin internet");
+ return  Center(child:CircularProgressIndicator());
 }
 
   }catch(e){

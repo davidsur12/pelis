@@ -3,7 +3,8 @@ import 'package:peliculas/widgets/text.dart';
 import 'package:peliculas/screen/info_movie.dart';
 import 'package:tmdb_api/tmdb_api.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'dart:async';
 class ListaInfinita extends StatefulWidget {
 
   final String genero;
@@ -22,23 +23,39 @@ class _ListaInfinitaState extends State<ListaInfinita> {
    int page=1;
    int aumento=1;
    var l;
-  
+   bool conection=false;
+    late StreamSubscription<ConnectivityResult> connectivitySubscription;
+
+
 @override
   void initState() {
-    listain();
-      _scrollController.addListener(_onScroll);
-    
+super.initState();
 
-    super.initState();
+
+  listain();
+ _scrollController.addListener(_onScroll);
+    
   }
-  @override
-void dispose() {
-  
-  super.dispose();
-}
+
+
+
+ 
  listain()async{
 
-    l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
+var result = await (Connectivity().checkConnectivity());
+ if(result == ConnectivityResult.mobile || result== ConnectivityResult.wifi || result == ConnectivityResult.ethernet ||
+result == ConnectivityResult.vpn || result == ConnectivityResult.other){
+
+  print("yes internet 2");
+  try{
+  
+l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
+if(l!= null){
+
+  print("no es nulo");
+}else{
+  print("es nulo");
+}
  
   setState(() {
    
@@ -62,7 +79,15 @@ if(page>1){
      
 
   });
-       
+
+ // print(movies["results"]);
+}catch(e){
+  print("error al consultar");
+}
+}
+
+    
+   
 
  }
  void _onScroll() async{
@@ -103,7 +128,12 @@ listain();
 
 
   getName(int index) {
-    String result = "";
+
+//return ("name");
+
+    try{
+
+ String result = "";
 // movies[index]["title"]!=null?movies[index]["title"]:"Loading"
     if (movies![index]["title"] != null) {
 //si el titulo se encuentra
@@ -118,7 +148,14 @@ listain();
         result = "Loading";
       }
     }
+    print(result);
     return result;
+
+    }catch(e){
+      print("error en el texto");
+      return Text("sin titulo");
+    }
+   
   }
 
 Widget lista(){
@@ -205,10 +242,26 @@ var result ;
 
     if (movies![index]["poster_path"] != null) {
 //si el titulo se encuentra
-      result = DecorationImage(image:  NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']),);
+try{
+
+ //NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']).
+   result = DecorationImage(image:  NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']));
+ /* result =  new DecorationImage(
+      image: new AssetImage('assets/img/fondo.png'),
+      fit: BoxFit.cover,
+    );*/
+}
+catch(e){
+print("error en la imagen");
+  result =  new DecorationImage(
+      image: new AssetImage('assets/img/fondo.png'),
+      fit: BoxFit.cover,
+    );
+}
+     
     } else {
       print("pelicula sin caratula");
-    result =  new DecorationImage(
+      result =  new DecorationImage(
       image: new AssetImage('assets/img/fondo.png'),
       fit: BoxFit.cover,
     );

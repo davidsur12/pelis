@@ -78,11 +78,20 @@ class SearchMovieDelegate extends SearchDelegate {
             return ListView.builder(
               itemCount: result.length,
               itemBuilder: (context, index) {
+
+               var img=   result[index]['poster_path'] != null ? Image.network('https://image.tmdb.org/t/p/w500' + result[index]['poster_path'],
+          height:200,) :Image.asset("assets/img/fondo.png");
+                
+                
                 var resul = getName(result[
                     index]); // obtengo el nombre de las peliculas encontradas
 
-                return ListTile(
-                  title: Text(resul,style:st),
+                return Row(
+
+children: [
+  img,
+  Text(resul,style:st)],
+                 // title: Text(resul,style:st),
                 );
               },
             );
@@ -117,4 +126,7 @@ class SearchMovieDelegate extends SearchDelegate {
     }
     return result;
   }
+
+
+  
 }

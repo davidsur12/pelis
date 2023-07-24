@@ -10,11 +10,11 @@ class Info_Movies extends StatelessWidget {
   final Map<String, dynamic> movie; //info de la pelicula
    Info_Movies({super.key, required this.movie});
 var width;
-
+var contexto;
 
   @override
   Widget build(BuildContext context) {
-   
+   contexto=context;
     width=MediaQuery.of(context).size.width;
     return NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -77,96 +77,7 @@ var width;
     );
   }
 
-  Widget loadImage(Map<String, dynamic> result) {
-//devuelve una imagen en caso de que la encuentre  de lo contraio devuelve una imagen de not found
-    Widget img;
-    if (result["video"] != null && result["video"] != false) {
-      img = Text(result["video"]);
-    } else if (result["backdrop_path"] != null) {
-      img =  Expanded(child:Image.network(
-          'https://image.tmdb.org/t/p/w500' + result['backdrop_path'] , ) );
-      
-    } else {
-      img = Image.asset("assets/img/fondo.png", width: 600);
-    }
-
-// Image.network('https://image.tmdb.org/t/p/w500' + result['backdrop_path']),
-//Image.network('https://image.tmdb.org/t/p/w500' + result['poster_path'],height: 100),
-/*
-else if(result["poster_path"]!= null){
-return Image.network('https://image.tmdb.org/t/p/w500' + result['poster_path'], );
-}
-else if(result["logo_path"]!= null){
-return Image.network('https://image.tmdb.org/t/p/w500' + result['logo_path'], );
-}*/
-
-    return Container(
-      height: 370,
-      color: Colors.white,
-      child: Stack(
-        alignment: Alignment.topLeft,
-        children: [
-          img,
-
-          // Image.network( 'https://image.tmdb.org/t/p/w500' + result['backdrop_path']),
-          Container(
-            color: Colors.black.withOpacity(0.2),
-            height: 370,
-            width: 500,
-            child: Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  //alignment: Alignment.bottomLeft,
-                  children: [
-                    result['poster_path'] != null
-                        ? Image.network(
-                            'https://image.tmdb.org/t/p/w500' +
-                                result['poster_path'],
-                            height: 170)
-                        : Image.asset("assets/img/fondo.png"),
-
-                   
-                    Row(
-                      children: [
-                        Container(
-                            height: 90,
-                            width: 376,
-                            color: Colors.black.withOpacity(0.8),
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 10, top: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  InfoTexto(
-                                      texto: ConsultaTmbd.year(movie),
-                                      color: Colors.white,
-                                      size: 15),
-                                  SizedBox(
-                                    height: 7,
-                                  ),
-                                  InfoTexto(
-                                      texto: ConsultaTmbd.nameMovie(movie),
-                                      color: Colors.white,
-                                      size: 20)
-                                ],
-                              ),
-                            )
-                            )
-                      ],
-                    )
-                  ], //required this.texto, required this.color, required this.size
-                )),
-          ),
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.flag_circle_sharp, color: Colors.white)),
-        ],
-      ),
-    );
-  }
-
+  
   Widget loadImage2(Map<String, dynamic> result) {
 //devuelve una imagen en caso de que la encuentre  de lo contraio devuelve una imagen de not found
     Widget img;
@@ -183,10 +94,18 @@ return Image.network('https://image.tmdb.org/t/p/w500' + result['logo_path'], );
 
 print(width);
     return  Column(children: [
+
       Stack(
+          alignment: Alignment.topLeft,
+        
+        children: [
+        Stack(
         alignment: Alignment.bottomLeft,
         children: [
-          Column(children: [img,
+          Column(children: [
+            
+           
+            img,
         /*  Container(
                             height: 90,
                             padding: EdgeInsets.only(left: 10),
@@ -242,7 +161,7 @@ SizedBox(width: width
   ],)
                                       
                                       ,),),
-          ],),
+         ],),
           
           
             result['poster_path'] != null
@@ -258,7 +177,16 @@ SizedBox(width: width
               onPressed: () {},
               icon: Icon(Icons.flag_circle_sharp, color: Colors.white)),*/
         ],
-      )]);
+      ),
+      Column(children: [SizedBox(height: 25,) , 
+        IconButton(
+              onPressed: () {
+                atras();
+              },
+              icon: Icon(Icons.arrow_back, color: Colors.white, size: 40,))],)
+      
+      ],)
+      ]);
     
   }
   Widget description(Map<String, dynamic> result) {
@@ -336,5 +264,11 @@ Future<void> launchUrll(String url) async {
     throw Exception('Could not launch $url');
   }
 }
+
+atras(){
+Navigator.of(contexto).pop();
+
+}
+
 
 }

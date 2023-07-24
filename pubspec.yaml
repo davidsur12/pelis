@@ -42,6 +42,7 @@ dependencies:
   url_launcher: ^6.1.12
   connectivity_plus: ^4.0.1
   rxdart: ^0.27.7
+  restart_app: ^1.2.1
 
 dev_dependencies:
   flutter_test:

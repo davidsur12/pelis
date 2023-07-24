@@ -1,8 +1,11 @@
 
+import 'dart:ffi';
+
 import 'package:tmdb_api/tmdb_api.dart';
 
-
-
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:restart_app/restart_app.dart';
+import 'dart:async';
 class ConsultaTmbd{
  static   const String apiKey = "9f32a872f4cad9ed23f93e9672063656";
   static const String token =
@@ -35,9 +38,64 @@ loadMovies(String movie) async {
 
 
 static listaPeliculas(String genero , int page)async{
+var result = await (Connectivity().checkConnectivity());
+ if(result == ConnectivityResult.mobile || result== ConnectivityResult.wifi || result == ConnectivityResult.ethernet ||
+result == ConnectivityResult.vpn || result == ConnectivityResult.other){
 
-return  await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: genero, includeVideo:true, page: page, ); 
+  print("yes internet");
+  try{ 
+var r =await tmdbWithCustomLogs.v3.discover
+        .getMovies(withGenres: genero, includeVideo:true, page: page,).timeout(Duration(seconds: 2)).onError((error, stackTrace) {
+
+print("error");
+return Future.error(Exception("Issue"));
+
+        })
+        .catchError((Error){
+
+          print("error catch ");
+           Restart.restartApp();
+          return null;
+        })
+        .whenComplete(() {
+
+   print("error en oncomplete");
+    //Restart.restartApp();
+   return null;
+
+        });
+
+      return r;
+
+       /*  then((value) {
+
+print("resultado " + value.toString());
+return value;
+
+        }).catchError((error){
+          print("error ops ");
+        }).onError((error, stackTrace) {
+
+           throw Exception('Data not available'); 
+        }); 
+        
+        
+       // print("result " + result.toString());
+        return result;
+        */
+
+}catch(e){
+
+  print("error 123 $e");
+  return null;
+}
+}
+
+
+
+
+return null;
+
 
 }
 
