@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:peliculas/screen/info_movie.dart';
 
 
 class ListaCard extends StatelessWidget {
@@ -39,6 +40,12 @@ class ListaCard extends StatelessWidget {
   ]),
   itemWidth: 200.0,
   itemHeight: 500.0,
+
+  onTap: (n){
+ 
+     Navigator.push(context,MaterialPageRoute(builder: (context) => Info_Movies(movie: movies[n])),
+                            );
+  },
 
       );
     

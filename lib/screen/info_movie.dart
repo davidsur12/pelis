@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:peliculas/utils/utils.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
 import 'package:peliculas/widgets/text.dart';
 import 'package:peliculas/widgets/lista_movies.dart';
@@ -9,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 class Info_Movies extends StatelessWidget {
   final Map<String, dynamic> movie; //info de la pelicula
    Info_Movies({super.key, required this.movie});
+   var height;
 var width;
 var contexto;
 
@@ -16,37 +16,20 @@ var contexto;
   Widget build(BuildContext context) {
    contexto=context;
     width=MediaQuery.of(context).size.width;
-    return NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              /*  SliverAppBar(
-               /* title: InfoTexto(
-                  texto: "Peliculas",
-                  color: Colors.white,
-                  size: 30.0,
-                ),*/
-                backgroundColor: Colors.green.withOpacity(0.1),
-                expandedHeight: 1,
-                pinned: true,
-                actions: [
-                  IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                      onPressed: () {
-                        //startSearchFunction();
+    height=MediaQuery.of(context).size.height;
+    return Scaffold(body: 
 
-                        // showSearch(context: context, delegate: SearchMovieDelegate() );
-                      })
-                ],
-                forceElevated: innerBoxIsScrolled,
-              ),
-           */
-            ],
-        body: SingleChildScrollView(
+
+   Container(
+    color: Colors.black,
+    height: height,
+    child:SingleChildScrollView(
           child: info(),
-        ));
+        ))
+    );
+    
+    
+    
   }
 
   Widget info() {
@@ -58,16 +41,20 @@ var contexto;
           // print(snapshot.data.toString());
           return Container(
             color:Colors.black,
+            //height: height,
             child:
-             Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+             (Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 loadImage2(snapshot.data),
                 description(snapshot.data),
                 paguina(snapshot.data),
+                
                 relacionados(snapshot.data)
               ],
-            ))
+            )
+            )
+            )
           ;
         }
         return 

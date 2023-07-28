@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/widgets/home.dart';
 
-import 'package:peliculas/utils/conecction.dart';
-
-//final internetChecker = CheckInternetConnection();  
-
 void main() async {
-  //final internetChecker = CheckInternetConnection(); 
+
   runApp(const MyApp());
 }
 

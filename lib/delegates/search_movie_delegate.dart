@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
 import 'package:more_loading_gif/more_loading_gif.dart';
+import 'package:peliculas/screen/info_movie.dart';
 
 class SearchMovieDelegate extends SearchDelegate {
-
   TextStyle st = TextStyle(color: Colors.white);
 
   SearchMovieDelegate()
       : super(
-          searchFieldLabel: "Busca peliculas o series",
+          searchFieldLabel: "Busca peliculas",
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.search,
         );
@@ -78,28 +78,48 @@ class SearchMovieDelegate extends SearchDelegate {
             return ListView.builder(
               itemCount: result.length,
               itemBuilder: (context, index) {
+                var img = result[index]['poster_path'] != null
+                    ? Image.network(
+                        'https://image.tmdb.org/t/p/w500' +
+                            result[index]['poster_path'],
+                        height: 200,
+                      )
+                    : Image.asset("assets/img/fondo.png", height: 130);
 
-               var img=   result[index]['poster_path'] != null ? Image.network('https://image.tmdb.org/t/p/w500' + result[index]['poster_path'],
-          height:200,) :Image.asset("assets/img/fondo.png");
-                
-                
                 var resul = getName(result[
                     index]); // obtengo el nombre de las peliculas encontradas
 
-                return Row(
+                return 
+                
+                InkWell(
+                  child:   Row(
+                  children: [
+                    img,
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.all(15),
+                      child: Text(resul, style: st, textAlign: TextAlign.center,),
+                    ))
+                  ],
+                  // title: Text(resul,style:st),
+                ),
+                onTap: (){
 
-children: [
-  img,
-  Text(resul,style:st)],
-                 // title: Text(resul,style:st),
-                );
+  Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      Info_Movies(movie: result[index])),
+                            );
+                },
+                )
+              ;
               },
             );
           } else {
-           // return Text("poner animacion");
-                 return 
-                 Center(child: MoreLoadingGif(type: MoreLoadingGifType.magnify));
-        
+            // return Text("poner animacion");
+            return Center(
+                child: MoreLoadingGif(type: MoreLoadingGifType.magnify));
           }
         }
       },
@@ -126,7 +146,4 @@ children: [
     }
     return result;
   }
-
-
-  
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peliculas/widgets/text.dart';
 import 'package:peliculas/screen/info_movie.dart';
-import 'package:tmdb_api/tmdb_api.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'dart:async';
@@ -32,14 +31,10 @@ class _ListaInfinitaState extends State<ListaInfinita> {
 super.initState();
 
 
-  listain();
+  listain2();
  _scrollController.addListener(_onScroll);
     
   }
-
-
-
- 
  listain()async{
 
 var result = await (Connectivity().checkConnectivity());
@@ -50,13 +45,7 @@ result == ConnectivityResult.vpn || result == ConnectivityResult.other){
   try{
   
 l=await ConsultaTmbd.listaPeliculas(widget.genero, page);
-if(l!= null){
 
-  print("no es nulo");
-}else{
-  print("es nulo");
-}
- 
   setState(() {
    
    if(movies != null){
@@ -90,6 +79,52 @@ if(page>1){
    
 
  }
+ 
+ listain2()async{
+
+var result=await ConsultaTmbd.listapeliculas2(widget.genero, page);
+if(result != null){
+setState(() {
+   
+   if(movies != null){
+ //print("movies " + movies!.length.toString());
+ 
+if(page>1){
+ // page++;
+// print( "nuevos valres " + l["results"].length.toString());
+        movies!.addAll(result["results"]);
+        print("mas peliculas");
+   //  print("movies" +movies!.length.toString());
+     }
+      
+   }else{
+    if(page == 1){
+ // page++;
+// print( "nuevos valres " + l["results"].length.toString());
+       // movies!.addAll(result["results"]);
+        //rint("mas peliculas");
+              movies=result["results"];
+      print("primeras pelicula");
+   //  print("movies" +movies!.length.toString());
+     }
+     }
+     
+     
+
+  });
+
+}
+else{
+   print("error al obtener peliculas");
+   setState((){
+
+   });
+   page--;
+  return null;
+ }
+
+ }
+ 
  void _onScroll() async{
     if (_scrollController.position.atEdge) {
       if (_scrollController.position.pixels == 0) {
@@ -98,12 +133,12 @@ if(page>1){
       } else {
         // Estás en la parte inferior del ListView
        // print('Estás en la parte inferior del ListView');
-       // print("page $page  and aumento $aumento  " );
+        print("page $page  and aumento $aumento  " );
         
         
         if(page<100){
           page++;
-listain();
+listain2();
 
         }
         
@@ -148,7 +183,7 @@ listain();
         result = "Loading";
       }
     }
-    print(result);
+   // print(result);
     return result;
 
     }catch(e){
@@ -240,24 +275,27 @@ return Container(
 var result ;
 // movies[index]["title"]!=null?movies[index]["title"]:"Loading"
 
-    if (movies![index]["poster_path"] != null) {
+   
 //si el titulo se encuentra
 try{
-
+ if (movies![index]["poster_path"] != null) {
+ // print(movies![index]["poster_path"].toString());
  //NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']).
-   result = DecorationImage(image:  NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']));
+   result = DecorationImage(
+    onError: (exception, stackTrace) {
+      print("error no se cargo la im");
+  result=AssetImage('assets/img/fondo.png');
+  },
+    image:  NetworkImage('https://image.tmdb.org/t/p/w500' + movies![index]['poster_path']));
+   // image:  NetworkImage("https://images.vexels.com/media/users/3/144171/isolated/lists/87118c2918277b5f778ab275ec7f7337-bandera-del-corazon-de-colombia.png"));
+ //https://static.wikia.nocookie.net/personajes-de-ficcion-database/images/d/d9/Goku_DBZ_Base.png/revision/latest?cb=20201216115006&path-prefix=es
+ 
  /* result =  new DecorationImage(
       image: new AssetImage('assets/img/fondo.png'),
       fit: BoxFit.cover,
     );*/
-}
-catch(e){
-print("error en la imagen");
-  result =  new DecorationImage(
-      image: new AssetImage('assets/img/fondo.png'),
-      fit: BoxFit.cover,
-    );
-}
+
+
      
     } else {
       print("pelicula sin caratula");
@@ -268,6 +306,16 @@ print("error en la imagen");
  //aqui deberia ir una imagen en caso de no encontrar  nada
     //result=Image.asset("");
     }
+}
+catch(e){
+print("error en la imagen");
+ return  new DecorationImage(
+  
+      image: new AssetImage('assets/img/fondo.png'),
+      fit: BoxFit.cover,
+    );
+}
+    
     return result;
   }
 

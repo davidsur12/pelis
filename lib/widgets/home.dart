@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tmdb_api/tmdb_api.dart';
 import 'package:peliculas/widgets/text.dart';
-import 'package:peliculas/widgets/lista_movies.dart';
 import 'package:peliculas/widgets/lista_card.dart';
 import 'package:peliculas/delegates/search_movie_delegate.dart';
 import 'package:peliculas/widgets/lista_infinita.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:peliculas/consultas/consultas_tmbd.dart';
-
-
+import 'package:lottie/lottie.dart';
 import 'dart:async';
 
 
@@ -25,28 +22,29 @@ class _homeState extends State<home> {
 
   
   final List<String> txtLista = [
-    "Peliculas populares",
-    "Pelicuas Comedia",
-    "Pelicuas de Horror",
-    "Peliculas de gerra",
-    "Peliculas  romanticas",
+   
+    "Peliculas de Comedia",
+    "Peliculas de Horror",
+    "Peliculas de Gerra",
+    "Peliculas  Romanticas",
     "Documentales",
   ];
-  List generos = ["12", "35", "27", "10752", "10749", "99"];
+  List generos = [ "35", "27", "10752", "10749", "99"];
 
   late StreamSubscription<ConnectivityResult> connectivitySubscription;
   bool conection=false;
-  
+
+    GlobalKey<ScaffoldState> scaffoldState = GlobalKey();
+ // late AdmobInterstitial interstitialAd;
   @override
   void initState() {
    // loadMovies();
     super.initState();
-    connectivitySubscription= Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    // Got a new connectivity status!
 
-    print(result.toString());
+    connectivitySubscription= Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+   
     if(result == ConnectivityResult.mobile || result== ConnectivityResult.wifi || result == ConnectivityResult.ethernet ||
-result == ConnectivityResult.vpn || result == ConnectivityResult.other){
+    result == ConnectivityResult.vpn || result == ConnectivityResult.other){
 
 
    //loadMovies();
@@ -68,57 +66,6 @@ result == ConnectivityResult.vpn || result == ConnectivityResult.other){
 
      
   }
-/*
-  loadMovies() async {
-    final tmdbWithCustomLogs = TMDB(
-        //TMDB instance
-        ApiKeys(apiKey, token), //ApiKeys instance with your keys,
-        /* logConfig: ConfigLogger(
-          showLogs: true, //must be true than only all other logs will be shown
-          showErrorLogs: true,
-        )*/
-        defaultLanguage: 'es-CO');
-
-    //Map generos = await tmdbWithCustomLogs.v3.genres.getMovieList(); //Obtén la lista de géneros oficiales para películas.
-    /* 
-       {genres: [{id: 28, name: Action}, {id: 12, name: Adventure}, {id: 16, name: Animation}, {id: 35, name: Comedy}, 
-       {id: 80, name: Crime}, {id: 99, name: Documentary}, {id: 18, name: Drama}, {id: 10751, name: Family},
-        {id: 14, name: Fantasy}, {id: 36, name: History}, {id: 27, name: Horror}, {id: 10402, name: Music}, 
-        {id: 9648, name: Mystery}, {id: 10749, name: Romance}, {id: 878, name: Science Fiction}, 
-       {id: 10770, name: TV Movie}, {id: 53, name: Thriller}, {id: 10752, name: War}, {id: 37, name: Western}]}
-       */
-
-    //var busqueda = await tmdbWithCustomLogs.v3.search .queryMovies("Drama"); //para buscar peliculas por palabras
-
-    //busqueda por categorias
-    var busquedaAdventura = await tmdbWithCustomLogs.v3.discover.getMovies(
-      withGenres: "12",
-      includeVideo: true,
-      page: 1,
-    ); //adventura
-    var busquedaComedia = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "35", includeVideo: true, page: 1); //comedia
-    var busquedaHorror = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "27", includeVideo: true, page: 1); //horror
-    var busquedaWar = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10752", includeVideo: true, page: 1); //gerra
-    var busquedaRomance = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "10749", includeVideo: true, page: 1); //romance
-    var busquedaDocumental = await tmdbWithCustomLogs.v3.discover
-        .getMovies(withGenres: "99", includeVideo: true, page: 1); //documental
-
-    //Map movie = await tmdbWithCustomLogs.v3.movies.getDetails(43421); //consulta peliculas con el id
-
-    //print(movie.toString());
-
-    Map recomendados = await tmdbWithCustomLogs.v3.trending.getTrending();
-    Map peliculas = await tmdbWithCustomLogs.v3.movies.getPopular();
-    Map series = await tmdbWithCustomLogs.v3.tv.getPopular();
-// v3.tv.getPopular();
-    setState(() {
-      listaSeries = series["results"];
-    });
-  }*/
 
   final texto = "peliculas";
 
@@ -156,11 +103,92 @@ result == ConnectivityResult.vpn || result == ConnectivityResult.other){
               ),
             ],
         // The content of the scroll view
-        body: info2());
+        body:  
+        //prueba2()
+        info2()
+        //prueba() 
+
+
+        
+        
+        );
         
   }
+prueba2(){
+try{
 
- 
+if(conection){
+return ListaInfinita(genero: generos[1], titulo: txtLista[1]);
+
+}else{
+
+ return  Center(child:CircularProgressIndicator());
+}
+
+  }catch(e){
+    return Text("error en la app");
+  }
+
+  
+}
+ prueba(){
+return FutureBuilder(
+        future: ConsultaTmbd.listapeliculas2("35" , 1), //.getMovieDetails(movieId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error al cargar los detalles'),
+            );
+          } else if(snapshot.hasData){
+           
+            if(snapshot.data !=null){
+           var resultado=snapshot.data! as Map<dynamic , dynamic>;
+           print("total pelis " +resultado["results"].length.toString());
+            String n =  resultado["results"].toString();
+               return Center(child:Text(n));
+            }
+         
+          
+            /*
+            final movieDetails = snapshot.data;
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Image.network(
+                    'https://image.tmdb.org/t/p/w500${movieDetails['poster_path']}',
+                    height: 300,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      movieDetails['title'],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      movieDetails['overview'],
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
+              ),
+            );*/
+          }
+          return Text("error en la consulta");
+   },
+      );
+
+ }
 Widget info2(){
   try{
 
@@ -173,11 +201,11 @@ return Container(
 
 }else{
 
- return  Center(child:CircularProgressIndicator());
+ return  Center(child:Lottie.asset('assets/animations/sin_internet.json'),);
 }
 
   }catch(e){
-    return Text("error en la app");
+    return Center(child:Lottie.asset('assets/animations/error.json'),);
   }
 
 
@@ -190,15 +218,18 @@ return Container(
 
 if(listaSeries.length >0){
 
-result.add(Container(
+result.add(
+  
+  Container(
       height: 300,
       color: Colors.black,
   
       child: ListaCard(movies:listaSeries )
-    ));
+    )
+    );
 }
 
-
+//result.add(admod());
     for (int index = 0; index < generos.length; index++) {
       result
           .add(ListaInfinita(genero: generos[index], titulo: txtLista[index]));
@@ -209,12 +240,14 @@ result.add(Container(
 
   series() async{
 
- var lista=await ConsultaTmbd.listaSeries();
+ var lista=await ConsultaTmbd.relacionadosPeliculas("12");
 
  setState(() {
    listaSeries=lista["results"];
  });
 
   }
+
+
 
 }
