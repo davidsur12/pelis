@@ -19,6 +19,8 @@ class home extends StatefulWidget {
 class _homeState extends State<home> {
   List listaSeries = [];
   
+  var height;
+var width;
 
   
   final List<String> txtLista = [
@@ -71,6 +73,9 @@ class _homeState extends State<home> {
 
   @override
   Widget build(BuildContext context) {
+
+     width=MediaQuery.of(context).size.width;
+    height=MediaQuery.of(context).size.height;
     return NestedScrollView(
         // This builds the scrollable content above the body
         headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -81,7 +86,7 @@ class _homeState extends State<home> {
                   size: 30.0,
                 ),
                 backgroundColor: Colors.black,
-                expandedHeight: 80,
+                expandedHeight: 50,
                 pinned: true,
                 actions: [
                   IconButton(
@@ -102,15 +107,13 @@ class _homeState extends State<home> {
                 forceElevated: innerBoxIsScrolled,
               ),
             ],
-        // The content of the scroll view
-        body:  
+       
+        body: 
+       
         //prueba2()
         info2()
         //prueba() 
 
-
-        
-        
         );
         
   }
@@ -193,19 +196,31 @@ Widget info2(){
   try{
 
 if(conection){
+  
 return Container(
+
                   color: Colors.black,
                   child:SingleChildScrollView (child: Column(//ListView(
                       //padding: const EdgeInsets.all(8),
                       children: ListaContenido2())));
 
+
 }else{
 
- return  Center(child:Lottie.asset('assets/animations/sin_internet.json'),);
+ return  Center(child:Container(
+  color:Color.fromARGB(0xff, 0x150, 0x150, 0x150),
+  child:Lottie.asset('assets/animations/sin_internet.json')
+ )
+ 
+ 
+ ,);
 }
 
   }catch(e){
-    return Center(child:Lottie.asset('assets/animations/error.json'),);
+    return Center(child:Container(
+color:Color.fromARGB(255, 16, 16, 16),
+      child:Lottie.asset('assets/animations/error.json')
+    ),);
   }
 
 
@@ -219,9 +234,13 @@ return Container(
 if(listaSeries.length >0){
 
 result.add(
+
+  //Column(children:[Expanded(child:Container(child:ListaCard(movies:listaSeries )))])
   
   Container(
-      height: 300,
+    
+      height: 200,
+    // width:width-40,//si algo sale mal quitar esta linea
       color: Colors.black,
   
       child: ListaCard(movies:listaSeries )

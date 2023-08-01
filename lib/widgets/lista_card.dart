@@ -5,21 +5,27 @@ import 'package:peliculas/screen/info_movie.dart';
 
 class ListaCard extends StatelessWidget {
 
-  final List movies;
+ final  List movies;
   const ListaCard({super.key, required this.movies});
 
   @override
   Widget build(BuildContext context) {
     return 
-    
-     Swiper(
+    (  Swiper(
       
         itemBuilder: (BuildContext context,int index){
-          return  movies[index]['poster_path'] != null ? Image.network('https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
-          height:200,) :Image.asset("assets/img/fondo.png");
+          return  
+          
+          
+          /*movies[index]['poster_path'] != null ? Image.network('https://image.tmdb.org/t/p/w500' + movies[index]['poster_path'],
+          height:200,) :Image.asset("assets/img/fondo.png", height:200);*/
+
+           getBackdrop(index);//:getPoster(index);
         },
         itemCount: movies.length,
-        pagination: SwiperPagination(),
+        pagination: SwiperPagination(
+          margin: EdgeInsets.all(0)
+        ),
        /* pagination: SwiperPagination(),
         control: SwiperControl(),
         */
@@ -38,8 +44,9 @@ class ListaCard extends StatelessWidget {
     Offset(0.0, 0.0),
     Offset(370.0, -40.0)
   ]),
-  itemWidth: 200.0,
-  itemHeight: 500.0,
+  //containerWidth: 150,
+  itemWidth: 400.0,
+  itemHeight: 300.0,
 
   onTap: (n){
  
@@ -47,9 +54,41 @@ class ListaCard extends StatelessWidget {
                             );
   },
 
-      );
+      ))
+    ;
     
     
     //https://pub.dev/packages/card_swiper
   }
+
+  Widget getBackdrop(int index){
+
+//movies[index]
+
+if(this.movies[index]['backdrop_path'] != null){
+return Image.network(
+          'https://image.tmdb.org/t/p/w500' + movies[index]['backdrop_path'], height: 200  );
+  
+}
+  return Image.asset("assets/img/fondo.png" , height: 200 );
+
+
+}
+
+Widget getPoster(int index){
+
+
+ if(this.movies[index]["poster_path"]!= null){
+
+return Image.network(
+          'https://image.tmdb.org/t/p/w500' + this.movies[index]["poster_path"], height: 200 );
+
+
+
+}
+else{
+  return Image.asset("aseets/img/fondo.png" , height: 200);
+}
+
+}
 }
